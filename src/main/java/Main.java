@@ -1,3 +1,8 @@
+/**
+ * Author: Paul Basso Class: COP 3003 File: Main.java Description: Main method that creates the GUI
+ * and adds the elements of a .css file to its style.
+ */
+
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -9,6 +14,11 @@ public class Main extends Application {
   public static void main(String[] args) {
     launch(args);
   }
+
+  /**
+   * @param: primaryStage
+   * @throws: Exception
+   */
 
   @Override
   public void start(Stage primaryStage) throws Exception {
