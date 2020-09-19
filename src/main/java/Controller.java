@@ -53,9 +53,8 @@ public class Controller {
   private Tab tab3;
 
   /**
-   * @param:
-   * @return: Description: takes user input, verifies the user inputted something on all required
-   * fields, and inserts the data into the PRODUCT table by accessing the database.
+   * Description: takes user input, verifies the user inputted something on all required fields, and
+   * inserts the data into the PRODUCT table by accessing the database.
    */
 
   @FXML
@@ -115,8 +114,7 @@ public class Controller {
   }
 
   /**
-   * @param:
-   * @return: Description: records the production of the product, including quantity.
+   * Description: records the production of the product, including quantity.
    */
 
   @FXML
@@ -125,8 +123,7 @@ public class Controller {
   }
 
   /**
-   * @param:
-   * @return: Description: initializes ComboBox and ChoiceBox
+   * Description: initializes ComboBox and ChoiceBox
    */
   public void initialize() {
     for (int count = 1; count <= 10; count++) {
@@ -141,9 +138,8 @@ public class Controller {
   }
 
   /**
-   * @param:
-   * @return: Description: displays current list of products in order of name, type, and
-   * manufacturer by accessing the database.
+   * Description: displays current list of products in order of name, type, and manufacturer by
+   * accessing the database.
    */
 
   public void showProductList() {
