@@ -133,8 +133,9 @@ public class Controller {
     cmbQuantity.getSelectionModel().selectFirst();
     cmbQuantity.setEditable(true);
 
-    chbProType.getItems().add("Audio");
-    chbProType.getItems().add("Video");
+    for (ItemType it : ItemType.values()) {
+      chbProType.getItems().add(String.valueOf(it));
+    }
   }
 
   /**
