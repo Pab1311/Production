@@ -1,7 +1,7 @@
 public abstract class Product implements Item {
 
   public int id;
-  public String type;
+  public ItemType type;
   public String manufacturer;
   public String name;
 
@@ -25,17 +25,22 @@ public abstract class Product implements Item {
     return manufacturer;
   }
 
-  public Product(int id, String type, String manufacturer, String name) {
-    this.id = id;
-    this.type = type;
-    this.manufacturer = manufacturer;
+  public Product(String name, String manufacturer, ItemType type) {
     this.name = name;
+    this.manufacturer = manufacturer;
+    this.type = type;
   }
 
   public String toString() {
     return ("Name: " + name + "\nManufacturer: "
-        + manufacturer + "\nType: " + type);
+        + manufacturer + "\nType: " + type.code);
   }
 
+}
 
+class Widget extends Product {
+
+  public Widget(String name, String manufacturer, ItemType type) {
+    super(name, manufacturer, type);
+  }
 }
