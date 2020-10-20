@@ -33,7 +33,7 @@ public abstract class Product implements Item {
 
   public String toString() {
     return ("Name: " + name + "\nManufacturer: "
-        + manufacturer + "\nType: " + type.code);
+        + manufacturer + "\nType: " + type);
   }
 
 }
