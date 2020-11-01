@@ -5,6 +5,20 @@ public abstract class Product implements Item {
   public String manufacturer;
   public String name;
 
+  public Product(String name, String manufacturer, ItemType type) {
+    this.name = name;
+    this.manufacturer = manufacturer;
+    this.type = type;
+  }
+
+  // for creating Products for tableview from database
+  public Product(int id, String name, String manufacturer, ItemType type) {
+    this.id = id;
+    this.name = name;
+    this.manufacturer = manufacturer;
+    this.type = type;
+  }
+
   public int getId() {
     return id;
   }
@@ -25,11 +39,10 @@ public abstract class Product implements Item {
     return manufacturer;
   }
 
-  public Product(String name, String manufacturer, ItemType type) {
-    this.name = name;
-    this.manufacturer = manufacturer;
-    this.type = type;
+  public ItemType getType() {
+    return type;
   }
+
 
   public String toString() {
     return ("Name: " + name + "\nManufacturer: "

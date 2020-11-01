@@ -26,7 +26,7 @@ public class MoviePlayer extends Product implements MultimediaControl {
   }
 
   public String toString() {
-    return (super.toString() + "\n" + screen.toString() + "\nMonitor Type: " + monitorType.type);
+    return (super.toString() + "\n" + screen.toString() + "\nMonitor Type: " + monitorType);
   }
 
 }

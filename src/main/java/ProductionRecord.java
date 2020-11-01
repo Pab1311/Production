@@ -7,6 +7,13 @@ public class ProductionRecord {
   String serialNumber;
   Date dateProduced;
 
+  ProductionRecord(int productID) {
+    this.productID = productID;
+    this.productionNumber = 0;
+    this.serialNumber = "0";
+    this.dateProduced = new Date();
+  }
+
   ProductionRecord(int productionNumber, int productID, String serialNumber, Date dateProduced) {
     this.productionNumber = productionNumber;
     this.productID = productID;
@@ -14,7 +21,16 @@ public class ProductionRecord {
     this.dateProduced = dateProduced;
   }
 
-  public void setProductionNumber(int productionNumber) {
+  ProductionRecord(Product product, int count) {
+    // need to add five digits for item types
+    serialNumber = product.getManufacturer().substring(0, 3) + product.type.code + String
+        .format("%05d", count);
+    productID = 0;
+    productionNumber = 0;
+    dateProduced = new Date();
+  }
+
+  public void setProductionNum(int productionNumber) {
     this.productionNumber = productionNumber;
   }
 
@@ -22,15 +38,15 @@ public class ProductionRecord {
     this.productID = productID;
   }
 
-  public void setSerialNumber(String serialNumber) {
+  public void setSerialNum(String serialNumber) {
     this.serialNumber = serialNumber;
   }
 
-  public void setDateProduced(Date dateProduced) {
+  public void setProdDate(Date dateProduced) {
     this.dateProduced = dateProduced;
   }
 
-  public int getProductionNumber() {
+  public int getProductionNum() {
     return productionNumber;
   }
 
@@ -38,17 +54,17 @@ public class ProductionRecord {
     return productID;
   }
 
-  public String getSerialNumber() {
+  public String getSerialNum() {
     return serialNumber;
   }
 
-  public Date getDateProduced() {
+  public Date getProdDate() {
     return dateProduced;
   }
 
   public String toString() {
-    return ("Prod. Num: " + productionNumber + "\nProduct ID: " + productID + "\nSerial Num: "
-        + serialNumber + "\n Date: " + dateProduced);
+    return ("Prod. Num: " + productionNumber + " Product ID: " + productID + " Serial Num: "
+        + serialNumber + " Date: " + dateProduced);
   }
 
 }
