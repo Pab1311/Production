@@ -1,16 +1,3 @@
-/**
- * Author: Paul Basso Class: COP 3003 File: Controller.java Description: Object created by FXML
- * which is used to initialize the UI elements and contains methods that are called when the user
- * interacts with the GUI.
- */
-
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -28,9 +15,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 public class Controller {
-
-  @FXML
-  private Tab tab1;
 
   @FXML
   private TextField txtProName;
@@ -57,10 +41,10 @@ public class Controller {
   private TableColumn<Product, ItemType> typeCol;
 
   @FXML
-  private TextArea prodLog;
+  private TableColumn<Product, Integer> productId;
 
   @FXML
-  private Tab tab2;
+  private TextArea prodLog;
 
   @FXML
   private ListView<Product> lstProduct;
@@ -72,15 +56,34 @@ public class Controller {
   private Label lblRecord;
 
   @FXML
-  private Tab tab3;
+  private Tab tab4;
+
+  @FXML
+  private TextField empName;
+
+  @FXML
+  private TextField empNewPass;
+
+  @FXML
+  private TextField empUser;
+
+  @FXML
+  private TextField empPass;
+
+  @FXML
+  private Label loginError;
 
   // list of products
-  private final ObservableList<Product> productLine = FXCollections.observableArrayList();
+  private ObservableList<Product> productLine = FXCollections.observableArrayList();
 
-  // list of production records
-  private final ObservableList<ProductionRecord> productRecords = FXCollections
-      .observableArrayList();
+  // check if employee is logged in
+  boolean loggedIn = false;
 
+  // database
+  final Database data = new Database();
+
+  // current employee signed in
+  Employee employee;
 
   /**
    * Description: initializes ComboBox and ChoiceBox and sets up Product Line Table
@@ -92,18 +95,18 @@ public class Controller {
     setUpChb();
     setUpLstProduct();
     setUpProductionRecord();
-
-    testMultimedia();
   }
 
   /**
    * Description: initializes production log TextView
    */
   public void setUpProductionRecord() {
-    // sample record to display until we access database next week (11/2/20)
-    ProductionRecord test = new ProductionRecord(0);
-    prodLog.setText(test.toString());
-
+    prodLog.clear();
+    // list of production records
+    ArrayList<ProductionRecord> productRecords = data.accessProductionRecord();
+    for (ProductionRecord productRecord : productRecords) {
+      prodLog.appendText(productRecord.toString() + "\n");
+    }
   }
 
   /**
@@ -136,29 +139,11 @@ public class Controller {
   }
 
   public void setUpProductLineTable() {
-    productName.setCellValueFactory(new PropertyValueFactory("name"));
-    manufacturer.setCellValueFactory(new PropertyValueFactory("manufacturer"));
-    typeCol.setCellValueFactory(new PropertyValueFactory("type"));
-
+    productName.setCellValueFactory(new PropertyValueFactory<>("name"));
+    manufacturer.setCellValueFactory(new PropertyValueFactory<>("manufacturer"));
+    typeCol.setCellValueFactory(new PropertyValueFactory<>("type"));
+    productId.setCellValueFactory(new PropertyValueFactory<>("id"));
     tblExistingPro.setItems(productLine);
-  }
-
-  public static void testMultimedia() {
-    AudioPlayer newAudioProduct = new AudioPlayer("DP-X1A", "Onkyo",
-        "DSD/FLAC/ALAC/WAV/AIFF/MQA/Ogg-Vorbis/MP3/AAC", "M3U/PLS/WPL");
-    Screen newScreen = new Screen("720x480", 40, 22);
-    MoviePlayer newMovieProduct = new MoviePlayer("DBPOWER MK101", "OracleProduction", newScreen,
-        MonitorType.LCD);
-    ArrayList<MultimediaControl> productList = new ArrayList<MultimediaControl>();
-    productList.add(newAudioProduct);
-    productList.add(newMovieProduct);
-    for (MultimediaControl p : productList) {
-      System.out.println(p);
-      p.play();
-      p.stop();
-      p.next();
-      p.previous();
-    }
   }
 
   /**
@@ -169,56 +154,21 @@ public class Controller {
   @FXML
   void addProduct(ActionEvent event) {
 
-    final String JDBC_DRIVER = "org.h2.Driver";
-    final String DB_URL = "jdbc:h2:./res/PR";
-
-    //  Database credentials
-    final String USER = "";
-    final String PASS = "";
-    Connection conn = null;
-    PreparedStatement stmt = null;
-
     if (!(txtProName.getText().isBlank()) && !(txtManufacturer.getText().isBlank())
         && !(chbProType.getSelectionModel().getSelectedItem() == null)) {
       Widget item = new Widget(txtProName.getText(), txtManufacturer.getText(),
           ItemType.valueOf(chbProType.getSelectionModel().getSelectedItem()));
-      try {
-        // STEP 1: Register JDBC driver
-        Class.forName(JDBC_DRIVER);
-        //STEP 2: Open a connection
-        // empty database password
-        conn = DriverManager.getConnection(DB_URL, USER, PASS);
 
-        //STEP 3: Execute an insertion of data
-        String sql = "INSERT INTO Product(type, manufacturer, name) "
-            + "VALUES (?, ?, ?)";
+      data.addProduct(item);
+      lblStatus.setText("Product added.");
+      txtManufacturer.clear();
+      txtProName.clear();
+      chbProType.getSelectionModel().clearSelection();
 
-        // method may fail to clean up java.sql.Statement on checked exception
-        stmt = conn.prepareStatement(sql);
+      // update list of current products
+      showProductList();
+      setUpLstProduct();
 
-        stmt.setString(1, item.type.code);
-        stmt.setString(2, item.getManufacturer());
-        stmt.setString(3, item.getName());
-        stmt.executeUpdate();
-
-        // STEP 4: Clean-up environment + notify user that product is added
-        stmt.close();
-        conn.close();
-
-        lblStatus.setText("Product added.");
-        txtManufacturer.clear();
-        txtProName.clear();
-        chbProType.getSelectionModel().clearSelection();
-
-        // update list of current products
-        showProductList();
-
-      } catch (ClassNotFoundException e) {
-        e.printStackTrace();
-
-      } catch (SQLException e) {
-        e.printStackTrace();
-      }
     } else {
       lblStatus.setText("Please fill out all fields in order to add product.");
     }
@@ -231,129 +181,101 @@ public class Controller {
    */
 
   public void showProductList() {
-    final String JDBC_DRIVER = "org.h2.Driver";
-    final String DB_URL = "jdbc:h2:./res/PR";
-
-    //  Database credentials
-    final String USER = "";
-    final String PASS = "";
-    Connection conn = null;
-    Statement stmt = null;
-
     // clear list to add new products and current products
     productLine.clear();
-
-    try {
-      // STEP 1: Register JDBC driver
-      Class.forName(JDBC_DRIVER);
-      //STEP 2: Open a connection
-      // method may fail to clean up java.sql.Statement on checked exception
-      // empty database password
-      conn = DriverManager.getConnection(DB_URL, USER, PASS);
-      stmt = conn.createStatement();
-
-      //STEP 3: Execute an insertion of data
-      // method may fail to clean up java.sql.ResultSet on checked exception
-      String searchSql = "SELECT * FROM PRODUCT";
-
-      ResultSet rs = stmt.executeQuery(searchSql);
-
-      // found on stack overflow for accessing elements of each row
-      while (rs.next()) {
-        String name = rs.getString(2);
-        String manufacturer = rs.getString(4);
-        ItemType type = null;
-        for (ItemType it : ItemType.values()) {
-          if (it.code.equals(rs.getString(3))) {
-            type = it;
-          }
-        }
-        Product product = new Widget(name, manufacturer, type);
-        productLine.add(product);
-      }
-
-      // STEP 4: Clean-up environment + notify user that product is added
-      stmt.close();
-      conn.close();
-
-    } catch (ClassNotFoundException e) {
-      e.printStackTrace();
-
-    } catch (SQLException e) {
-      e.printStackTrace();
-    }
-
+    productLine = data.accessProducts();
     setUpProductLineTable();
-
   }
 
 
   /**
-   * Description: records production of existing product by accessing the database and adding to the
-   * table.
+   * @param actionEvent Description: records production of existing product by accessing the
+   *                    database and adding to the table.
    */
-  // change date to TimeStamp next week (11/2/20)
   public void recordProduction(ActionEvent actionEvent) {
-    final String JDBC_DRIVER = "org.h2.Driver";
-    final String DB_URL = "jdbc:h2:./res/PR";
-
-    //  Database credentials
-    final String USER = "";
-    final String PASS = "";
-    Connection conn = null;
-    PreparedStatement stmt = null;
 
     if (!(lstProduct.getSelectionModel().getSelectedItem() == null)
         && !(cmbQuantity.getSelectionModel().getSelectedItem() == null)) {
-
-      int itemCount = 0;
-      int numProduced = Integer.parseInt(cmbQuantity.getSelectionModel().getSelectedItem());
-
-      try {
-        // STEP 1: Register JDBC driver
-        Class.forName(JDBC_DRIVER);
-        //STEP 2: Open a connection
-        // empty database password
-        conn = DriverManager.getConnection(DB_URL, USER, PASS);
+      if (loggedIn) {
+        int currentCount = data
+            .getMaxSerialNum(lstProduct.getSelectionModel().getSelectedItem().getId());
+        int numProduced = Integer.parseInt(cmbQuantity.getSelectionModel().getSelectedItem());
 
         for (int productionRunProduct = 0; productionRunProduct < numProduced;
             productionRunProduct++) {
-          ProductionRecord record = new ProductionRecord(
-              lstProduct.getSelectionModel().getSelectedItem(), itemCount++);
+          // checking if serial num already exists (if so increment and continue from last point)
+          if (currentCount == -1) {
+            ProductionRecord record;
+            record = new ProductionRecord(
+                lstProduct.getSelectionModel().getSelectedItem(), ++currentCount);
+            data.recordProduction(record, employee);
+          } else {
+            ProductionRecord record;
+            record = new ProductionRecord(
+                lstProduct.getSelectionModel().getSelectedItem(), ++currentCount);
 
-          //STEP 3: Execute an insertion of data
-          String sql =
-              "INSERT INTO ProductionRecord(product_id, serial_num, date_produced) "
-                  + "VALUES (?, ?, ?)";
-
-          // method may fail to clean up java.sql.Statement on checked exception
-          stmt = conn.prepareStatement(sql);
-
-          stmt.setInt(1, record.getProductID());
-          stmt.setString(2, record.getSerialNum());
-          stmt.setDate(3, new java.sql.Date(record.getProdDate().getTime()));
-          stmt.executeUpdate();
-
+            data.recordProduction(record, employee);
+          }
         }
-
-        // STEP 4: Clean-up environment + notify user that product is added
-        stmt.close();
-        conn.close();
 
         lblRecord.setText("Production recorded.");
         lstProduct.getSelectionModel().clearSelection();
 
-      } catch (ClassNotFoundException e) {
-        e.printStackTrace();
-
-      } catch (SQLException e) {
-        e.printStackTrace();
+        setUpProductionRecord();
+      } else {
+        lblRecord.setText("You must be logged in as an employee\n in order to record production.");
       }
-
-
     } else {
       lblRecord.setText("Please fill out all fields \nin order to record production.");
     }
   }
 
+  @FXML
+  void enrollEmployee(ActionEvent event) {
+    if (!(empName.getText().isBlank()) && !(empNewPass.getText().isBlank())
+    ) {
+      String name = empName.getText();
+      String password = empNewPass.getText();
+      if (data.checkIfNameExists(name)) {
+        loginError.setText("An account for this person already exists.");
+      } else {
+        Employee user = new Employee(name, password);
+        data.addEmployee(user);
+        empName.clear();
+        empNewPass.clear();
+        loggedIn = true;
+        employee = user;
+        tab4.setDisable(true);
+      }
+    } else {
+      loginError.setText("Please fill out all fields before attempting to sign up.");
+    }
+  }
+
+  @FXML
+  void loginEmployee(ActionEvent event) {
+    if (!(empUser.getText().isBlank()) && !(empPass.getText().isBlank())
+    ) {
+
+      String username = empUser.getText();
+      String password = empPass.getText();
+
+      if (data.checkIfEmployeeExists(username, password)) {
+        loggedIn = true;
+        employee = new Employee(data.getEmployeeName(username), password);
+        empUser.clear();
+        empPass.clear();
+        tab4.setDisable(true);
+      } else if (data.checkIfUsernameExists(username)) {
+        loginError.setText("Password is incorrect. Please try again.");
+      } else {
+        loginError.setText("Account does not exist. Please try again or \ncreate an account.");
+      }
+    } else {
+      loginError.setText("Please fill out all fields before attempting to login.");
+    }
+
+  }
 }
+
+

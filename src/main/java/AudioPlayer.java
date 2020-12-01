@@ -1,7 +1,7 @@
 public class AudioPlayer extends Product implements MultimediaControl {
 
-  String supportedAudioFormats;
-  String supportedPlaylistFormats;
+  final String supportedAudioFormats;
+  final String supportedPlaylistFormats;
 
   AudioPlayer(String name, String manufacturer, String supportedAudioFormats,
       String supportedPlaylistFormats) {
@@ -26,6 +26,7 @@ public class AudioPlayer extends Product implements MultimediaControl {
     System.out.println("Next");
   }
 
+  @Override
   public String toString() {
     return (super.toString() + "\nSupported Audio Formats: " + supportedAudioFormats
         + "\nSupported Playlist Formats: " + supportedPlaylistFormats);

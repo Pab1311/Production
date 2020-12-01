@@ -54,12 +54,13 @@
                   <Font size="14.0"/>
                 </font>
               </Label>
-              <TableView fx:id="tblExistingPro" layoutX="300.0" layoutY="34.0" prefHeight="200.0"
-                prefWidth="300.0">
+              <TableView fx:id="tblExistingPro" layoutX="272.0" layoutY="34.0" prefHeight="200.0"
+                prefWidth="376.0">
                 <columns>
                   <TableColumn fx:id="productName" prefWidth="100.0" text="Product Name"/>
                   <TableColumn fx:id="manufacturer" prefWidth="105.0" text="Manufacturer"/>
                   <TableColumn fx:id="typeCol" prefWidth="94.0" text="Item Type"/>
+                  <TableColumn fx:id="productID" prefWidth="75.0" text="ID"/>
                 </columns>
               </TableView>
               <Button layoutX="90.0" layoutY="197.0" mnemonicParsing="false" onAction="#addProduct"
@@ -104,6 +105,70 @@
             <children>
               <TextArea fx:id="prodLog" layoutX="20.0" layoutY="29.0" prefHeight="211.0"
                 prefWidth="549.0"/>
+            </children>
+          </AnchorPane>
+        </content>
+      </Tab>
+      <Tab fx:id="tab4" closable="false" text="Employee">
+        <content>
+          <AnchorPane prefHeight="299.0" prefWidth="589.0" snapToPixel="false">
+            <children>
+              <Label layoutX="87.0" layoutY="28.0" prefHeight="17.0" prefWidth="112.0"
+                text="Sign Up">
+                <font>
+                  <Font size="20.0"/>
+                </font>
+              </Label>
+              <Label layoutX="20.0" layoutY="285.0" prefHeight="72.0" prefWidth="570.0"
+                text="Note: Password must contain a lowercase letter, uppercase letter, and a special character">
+                <font>
+                  <Font size="10.0"/>
+                </font>
+              </Label>
+              <TextField fx:id="empName" layoutX="50.0" layoutY="91.0"/>
+              <TextField fx:id="empNewPass" layoutX="50.0" layoutY="153.0"/>
+              <TextField fx:id="empUser" layoutX="426.0" layoutY="91.0"/>
+              <TextField fx:id="empPass" layoutX="426.0" layoutY="153.0"/>
+              <Label layoutX="50.0" layoutY="66.0" prefHeight="17.0" prefWidth="112.0"
+                text="Full Name">
+                <font>
+                  <Font size="16.0"/>
+                </font>
+              </Label>
+              <Label layoutX="50.0" layoutY="128.0" prefHeight="17.0" prefWidth="112.0"
+                text="Password">
+                <font>
+                  <Font size="16.0"/>
+                </font>
+              </Label>
+              <Label layoutX="463.0" layoutY="28.0" prefHeight="17.0" prefWidth="112.0"
+                text="Sign In">
+                <font>
+                  <Font size="20.0"/>
+                </font>
+              </Label>
+              <Label layoutX="426.0" layoutY="66.0" prefHeight="17.0" prefWidth="112.0"
+                text="Username">
+                <font>
+                  <Font size="16.0"/>
+                </font>
+              </Label>
+              <Label layoutX="426.0" layoutY="128.0" prefHeight="17.0" prefWidth="112.0"
+                text="Password">
+                <font>
+                  <Font size="16.0"/>
+                </font>
+              </Label>
+              <Button layoutX="93.0" layoutY="192.0" mnemonicParsing="false"
+                onAction="#enrollEmployee" prefHeight="31.0" prefWidth="63.0" text="Enroll"/>
+              <Button layoutX="469.0" layoutY="192.0" mnemonicParsing="false"
+                onAction="#loginEmployee" prefHeight="31.0" prefWidth="63.0" text="Login"/>
+              <Label fx:id="loginError" layoutX="130.0" layoutY="240.0" prefHeight="45.0"
+                prefWidth="351.0">
+                <font>
+                  <Font size="14.0"/>
+                </font>
+              </Label>
             </children>
           </AnchorPane>
         </content>

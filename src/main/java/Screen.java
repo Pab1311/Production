@@ -1,8 +1,8 @@
 public class Screen implements ScreenSpec {
 
-  String resolution;
-  int refreshrate;
-  int responsetime;
+  final String resolution;
+  final int refreshrate;
+  final int responsetime;
 
   Screen(String resolution, int refreshrate, int responsetime) {
     this.resolution = resolution;

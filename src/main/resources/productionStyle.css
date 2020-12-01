@@ -1,7 +1,7 @@
-.root {
+root {
   -fx-font-size: 10pt;
 }
 
-.tab {
+tab {
   -fx-background-color: linear-gradient(#4169E1, #ADD8E6);
 }

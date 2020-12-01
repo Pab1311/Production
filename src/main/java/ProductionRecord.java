@@ -3,29 +3,28 @@ import java.util.Date;
 public class ProductionRecord {
 
   int productionNumber;
-  int productID;
+  int productId;
   String serialNumber;
   Date dateProduced;
 
-  ProductionRecord(int productID) {
-    this.productID = productID;
+  ProductionRecord(int productId) {
+    this.productId = productId;
     this.productionNumber = 0;
     this.serialNumber = "0";
     this.dateProduced = new Date();
   }
 
-  ProductionRecord(int productionNumber, int productID, String serialNumber, Date dateProduced) {
+  ProductionRecord(int productionNumber, int productId, String serialNumber, Date dateProduced) {
     this.productionNumber = productionNumber;
-    this.productID = productID;
+    this.productId = productId;
     this.serialNumber = serialNumber;
     this.dateProduced = dateProduced;
   }
 
   ProductionRecord(Product product, int count) {
-    // need to add five digits for item types
     serialNumber = product.getManufacturer().substring(0, 3) + product.type.code + String
         .format("%05d", count);
-    productID = 0;
+    productId = product.getId();
     productionNumber = 0;
     dateProduced = new Date();
   }
@@ -34,8 +33,8 @@ public class ProductionRecord {
     this.productionNumber = productionNumber;
   }
 
-  public void setProductID(int productID) {
-    this.productID = productID;
+  public void setProductId(int productId) {
+    this.productId = productId;
   }
 
   public void setSerialNum(String serialNumber) {
@@ -50,8 +49,8 @@ public class ProductionRecord {
     return productionNumber;
   }
 
-  public int getProductID() {
-    return productID;
+  public int getProductId() {
+    return productId;
   }
 
   public String getSerialNum() {
@@ -63,8 +62,20 @@ public class ProductionRecord {
   }
 
   public String toString() {
-    return ("Prod. Num: " + productionNumber + " Product ID: " + productID + " Serial Num: "
-        + serialNumber + " Date: " + dateProduced);
-  }
+    Database data = new Database();
 
+    if (productId > 0) {
+      Product prod = data.getProductByID(productId);
+      String employeeName = data.getEmployeeByProdNum(productionNumber);
+
+      if (prod != null) {
+        return ("Prod. Num: " + productionNumber + " Product Name: " + prod.getName()
+            + " Serial Num: "
+            + serialNumber + " Date: " + dateProduced + " Employee: " + employeeName);
+      }
+    }
+    return ("Prod. Num: " + productionNumber + " Product ID: " + productId + " Serial Num: "
+        + serialNumber + " Date: " + dateProduced);
+
+  }
 }
