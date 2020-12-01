@@ -3,3 +3,5 @@ Semester-long JavaFX project for COP 3003 (Object-Oriented Programming) that use
 
 
 https://pab1311.github.io/Production/
+
+![Class Diagram](https://octodex.github.com/images/yaktocat.png)
