@@ -231,18 +231,24 @@ public class Controller {
 
     if (!(txtProName.getText().isBlank()) && !(txtManufacturer.getText().isBlank())
         && !(chbProType.getSelectionModel().getSelectedItem() == null)) {
-      Widget item = new Widget(txtProName.getText(), txtManufacturer.getText(),
-          ItemType.valueOf(chbProType.getSelectionModel().getSelectedItem()));
 
-      data.addProduct(item);
-      lblStatus.setText("Product added.");
-      txtManufacturer.clear();
-      txtProName.clear();
-      chbProType.getSelectionModel().clearSelection();
+      if (loggedIn) {
+        Widget item = new Widget(txtProName.getText(), txtManufacturer.getText(),
+            ItemType.valueOf(chbProType.getSelectionModel().getSelectedItem()));
 
-      // update list of current products
-      showProductList();
-      setUpLstProduct();
+        data.addProduct(item);
+        lblStatus.setText("Product added.");
+        txtManufacturer.clear();
+        txtProName.clear();
+        chbProType.getSelectionModel().clearSelection();
+
+        // update list of current products
+        showProductList();
+        setUpLstProduct();
+      } else {
+        lblStatus.setText("You must be logged in as an employee\n in order to create a product.");
+      }
+
 
     } else {
       lblStatus.setText("Please fill out all fields in order to add product.");
@@ -273,29 +279,34 @@ public class Controller {
       if (loggedIn) {
         int currentCount = data
             .getMaxSerialNum(lstProduct.getSelectionModel().getSelectedItem().getId());
-        int numProduced = Integer.parseInt(cmbQuantity.getSelectionModel().getSelectedItem());
 
-        for (int productionRunProduct = 0; productionRunProduct < numProduced;
-            productionRunProduct++) {
-          // checking if serial num already exists (if so increment and continue from last point)
-          if (currentCount == -1) {
-            ProductionRecord record;
-            record = new ProductionRecord(
-                lstProduct.getSelectionModel().getSelectedItem(), ++currentCount);
-            data.recordProduction(record, employee);
-          } else {
-            ProductionRecord record;
-            record = new ProductionRecord(
-                lstProduct.getSelectionModel().getSelectedItem(), ++currentCount);
+        try {
+          int numProduced = Integer.parseInt(cmbQuantity.getSelectionModel().getSelectedItem());
 
-            data.recordProduction(record, employee);
+          for (int productionRunProduct = 0; productionRunProduct < numProduced;
+              productionRunProduct++) {
+            // checking if serial num already exists (if so increment and continue from last point)
+            if (currentCount == -1) {
+              ProductionRecord record;
+              record = new ProductionRecord(
+                  lstProduct.getSelectionModel().getSelectedItem(), ++currentCount);
+              data.recordProduction(record, employee);
+            } else {
+              ProductionRecord record;
+              record = new ProductionRecord(
+                  lstProduct.getSelectionModel().getSelectedItem(), ++currentCount);
+
+              data.recordProduction(record, employee);
+            }
           }
+
+          lblRecord.setText("Production recorded.");
+          lstProduct.getSelectionModel().clearSelection();
+
+          setUpProductionRecord();
+        } catch (NumberFormatException e) {
+          lblRecord.setText("Quantity provided was not a number.\nPlease try again.");
         }
-
-        lblRecord.setText("Production recorded.");
-        lstProduct.getSelectionModel().clearSelection();
-
-        setUpProductionRecord();
       } else {
         lblRecord.setText("You must be logged in as an employee\n in order to record production.");
       }
