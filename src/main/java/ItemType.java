@@ -10,6 +10,11 @@ public enum ItemType {
     this.code = code;
   }
 
+  /**
+   * Gets the code value of the ItemType type
+   *
+   * @return code
+   */
   public String getCode() {
     return code;
   }

@@ -12,17 +12,41 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
-
+/**
+ * Represents the database
+ *
+ * @author Paul Basso
+ */
 public class Database {
 
+  /**
+   * Connection for the database
+   */
+
   private static Connection conn;
+
+  /**
+   * Driver for the database
+   */
+
   final String JDBC_DRIVER = "org.h2.Driver";
+
+  /**
+   * URL for the database
+   */
   final String DB_URL = "jdbc:h2:./res/PR";
 
-  //  Database credentials
+  /**
+   * Database credentials
+   */
   final String USER = "";
   final String PASS = reverseString(readFile());
 
+  /**
+   * Takes a String and reverses it recursively
+   *
+   * @param password
+   */
   public String reverseString(String password) {
     if (password.isEmpty()) {
       return password;
@@ -31,6 +55,9 @@ public class Database {
     return reverseString(password.substring(1)) + password.charAt(0);
   }
 
+  /**
+   * Reads from a created file and returns a string that will be reversed and used as a password
+   */
   public String readFile() {
     String password = "";
 
@@ -49,6 +76,11 @@ public class Database {
     return password;
   }
 
+  /**
+   * Accesses database and creates ProductionRecord objects while adding them to an ArrayList
+   *
+   * @return ArrayList<ProductionRecord> containing all production records
+   */
   public ArrayList<ProductionRecord> accessProductionRecord() {
     ArrayList<ProductionRecord> records = new ArrayList<>();
     Statement stmt;
@@ -91,6 +123,11 @@ public class Database {
     return records;
   }
 
+  /**
+   * Accesses database and creates Product objects while adding them to an ObservableList
+   *
+   * @return ObservableList<Product> containing all current products
+   */
   public ObservableList<Product> accessProducts() {
     ObservableList<Product> products = FXCollections.observableArrayList();
     Statement stmt;
@@ -137,7 +174,13 @@ public class Database {
     return products;
   }
 
-  public Widget getProductByID(int id) {
+  /**
+   * Accesses database and searches for a product that has the same id as the parameter.
+   *
+   * @param productId
+   * @return Widget object matching product id
+   */
+  public Widget getProductByID(int productId) {
     PreparedStatement stmt;
 
     try {
@@ -154,7 +197,7 @@ public class Database {
       // method may fail to clean up java.sql.Statement on checked exception
       stmt = conn.prepareStatement(sql);
 
-      stmt.setInt(1, id);
+      stmt.setInt(1, productId);
 
       ResultSet rs = stmt.executeQuery();
 
@@ -170,7 +213,7 @@ public class Database {
         }
         String manufacturer = rs.getString("manufacturer");
 
-        return new Widget(id, name, manufacturer, type);
+        return new Widget(productId, name, manufacturer, type);
       }
 
     } catch (ClassNotFoundException | SQLException e) {
@@ -183,6 +226,11 @@ public class Database {
 
   }
 
+  /**
+   * Accesses database and adds a Widget item as a Product to Product Table.
+   *
+   * @param item
+   */
   public void addProduct(Widget item) {
     PreparedStatement stmt;
 
@@ -215,6 +263,11 @@ public class Database {
     }
   }
 
+  /**
+   * Accesses database and adds a ProductionRecord object to ProductionRecord table.
+   *
+   * @param record, employee
+   */
   public void recordProduction(ProductionRecord record, Employee employee) {
     PreparedStatement stmt;
 
@@ -250,6 +303,13 @@ public class Database {
     }
   }
 
+  /**
+   * Accesses database and searches for the highest serial number in the table for a
+   * ProductionRecord object
+   *
+   * @param productID
+   * @return number
+   */
 
   public int getMaxSerialNum(int productID) {
     PreparedStatement stmt;
@@ -297,6 +357,11 @@ public class Database {
 
   }
 
+  /**
+   * Accesses database and adds an Employee to the Employee table.
+   *
+   * @param user
+   */
   public void addEmployee(Employee user) {
     PreparedStatement stmt;
 
@@ -330,6 +395,12 @@ public class Database {
     }
   }
 
+  /**
+   * Accesses database and checks if employee credentials match in the Employee table.
+   *
+   * @param username, password
+   * @return employeeExists
+   */
   public boolean checkIfEmployeeExists(String username, String password) {
     PreparedStatement stmt;
     boolean employeeExists = false;
@@ -371,6 +442,12 @@ public class Database {
 
   }
 
+  /**
+   * Accesses database and checks if employee name exists in the Employee table.
+   *
+   * @param name
+   * @return nameExists
+   */
   public boolean checkIfNameExists(String name) {
     PreparedStatement stmt;
     boolean nameExists = false;
@@ -411,6 +488,12 @@ public class Database {
 
   }
 
+  /**
+   * Accesses database and checks if employee username exists in the Employee table.
+   *
+   * @param username
+   * @return usernameExists
+   */
   public boolean checkIfUsernameExists(String username) {
     PreparedStatement stmt;
     boolean usernameExists = false;
@@ -451,6 +534,12 @@ public class Database {
 
   }
 
+  /**
+   * Accesses database and returns the name of the Employee with the given username
+   *
+   * @param username
+   * @return name
+   */
   public String getEmployeeName(String username) {
 
     PreparedStatement stmt;
@@ -491,6 +580,13 @@ public class Database {
 
   }
 
+  /**
+   * Accesses database and returns the name of the Employee who created a specific ProductionRecord
+   * Object
+   *
+   * @param productNum
+   * @return name
+   */
   public String getEmployeeByProdNum(int productNum) {
     PreparedStatement stmt;
     String name = "";

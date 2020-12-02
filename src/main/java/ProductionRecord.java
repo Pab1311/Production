@@ -1,10 +1,32 @@
 import java.util.Date;
 
+/**
+ * Represents a Production Record when a product is produced in the Production Line
+ *
+ * @author Paul Basso
+ */
+
 public class ProductionRecord {
 
+  /**
+   * the production's number (everytime a product is produced this is incremented by 1 in the
+   * database)
+   */
   int productionNumber;
+
+  /**
+   * the production's id which matches the product id
+   */
   int productId;
+
+  /**
+   * the production's unique serial number containing the type, manufacturer, and 5 digits.
+   */
   String serialNumber;
+
+  /**
+   * the date the production occurred
+   */
   Date dateProduced;
 
   ProductionRecord(int productId) {
@@ -29,38 +51,83 @@ public class ProductionRecord {
     dateProduced = new Date();
   }
 
+  /**
+   * sets the production number of the ProductionRecord
+   *
+   * @param productionNumber
+   */
   public void setProductionNum(int productionNumber) {
     this.productionNumber = productionNumber;
   }
 
+  /**
+   * sets the production id of the ProductionRecord
+   *
+   * @param productId
+   */
   public void setProductId(int productId) {
     this.productId = productId;
   }
 
+  /**
+   * sets the serial number of the ProductionRecord
+   *
+   * @param serialNumber
+   */
   public void setSerialNum(String serialNumber) {
     this.serialNumber = serialNumber;
   }
 
+  /**
+   * sets the date of the ProductionRecord
+   *
+   * @param dateProduced
+   */
   public void setProdDate(Date dateProduced) {
     this.dateProduced = dateProduced;
   }
 
+  /**
+   * Gets the production number of the ProductionRecord.
+   *
+   * @return this ProductionRecord's production number.
+   */
   public int getProductionNum() {
     return productionNumber;
   }
 
+  /**
+   * Gets the production id of the ProductionRecord.
+   *
+   * @return this ProductionRecord's product id.
+   */
   public int getProductId() {
     return productId;
   }
 
+  /**
+   * Gets the serial number of the ProductionRecord.
+   *
+   * @return this ProductionRecord's serial number.
+   */
   public String getSerialNum() {
     return serialNumber;
   }
 
+  /**
+   * Gets the date that the ProductionRecord was produced.
+   *
+   * @return this ProductionRecord's production date.
+   */
   public Date getProdDate() {
     return dateProduced;
   }
 
+  /**
+   * Returns a description of the ProductionRecord
+   *
+   * @return formatted output containing ProductionRecord details
+   */
   public String toString() {
     Database data = new Database();
 

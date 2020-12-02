@@ -14,79 +14,151 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 
+/**
+ * Controller for Production Line GUI
+ *
+ * @author Paul Basso
+ */
 public class Controller {
 
+
+  /**
+   * TextField to enter product name
+   */
   @FXML
   private TextField txtProName;
 
+  /**
+   * TextField to enter product manufacturer
+   */
   @FXML
   private TextField txtManufacturer;
 
+  /**
+   * ChoiceBox to choose product type
+   */
   @FXML
   private ChoiceBox<String> chbProType;
 
+  /**
+   * Label to indicate if creating product was successful
+   */
   @FXML
   private Label lblStatus;
 
+  /**
+   * Tableview to show current existing products and their characteristics (id, manufacturer, type)
+   */
   @FXML
   private TableView<Product> tblExistingPro;
 
+  /**
+   * Table column for product name
+   */
   @FXML
   private TableColumn<Product, String> productName;
 
+  /**
+   * Table column for product manufacturer
+   */
   @FXML
   private TableColumn<Product, String> manufacturer;
 
+  /**
+   * Table column for product type
+   */
   @FXML
   private TableColumn<Product, ItemType> typeCol;
 
+  /**
+   * Table column for product id
+   */
   @FXML
-  private TableColumn<Product, Integer> productId;
+  private TableColumn<Product, Integer> productID;
 
+  /**
+   * Text Area to show all production line records
+   */
   @FXML
   private TextArea prodLog;
 
+  /**
+   * ListView to show all products that can be created
+   */
   @FXML
   private ListView<Product> lstProduct;
 
+  /**
+   * Combobox with values 1-10 and editable to allow user to choose quantity of a product to
+   * produce
+   */
   @FXML
   private ComboBox<String> cmbQuantity;
 
+  /**
+   * Label to indicate if production was successful
+   */
   @FXML
   private Label lblRecord;
 
+  /**
+   * Employee tab
+   */
   @FXML
   private Tab tab4;
 
+  /**
+   * TextField to enter employee full name separated by a space
+   */
   @FXML
   private TextField empName;
 
+  /**
+   * TextField to enter a password for creating an Employee account (must meet requirements)
+   */
   @FXML
   private TextField empNewPass;
 
+  /**
+   * TextField to enter employee username when logging in
+   */
   @FXML
   private TextField empUser;
 
+  /**
+   * TextField to enter employee generated password when logging in
+   */
   @FXML
   private TextField empPass;
 
+  /**
+   * Label to indicate if signup or login were successful
+   */
   @FXML
   private Label loginError;
 
-  // list of products
+  /**
+   * List of Products
+   */
   private ObservableList<Product> productLine = FXCollections.observableArrayList();
 
-  // check if employee is logged in
+  /**
+   * Check if employee is logged in
+   */
   boolean loggedIn = false;
 
-  // database
+  /**
+   * Accessing database
+   */
   final Database data = new Database();
 
-  // current employee signed in
+  /**
+   * Current employee signed in
+   */
   Employee employee;
 
   /**
-   * Description: initializes ComboBox and ChoiceBox and sets up Product Line Table
+   * Description: initializes ComboBox, ChoiceBox, sets up Product Line Table, and Production Log
    */
   public void initialize() {
     showProductList();
@@ -138,11 +210,14 @@ public class Controller {
     cmbQuantity.setEditable(true);
   }
 
+  /**
+   * Description: initializes TableView for products
+   */
   public void setUpProductLineTable() {
     productName.setCellValueFactory(new PropertyValueFactory<>("name"));
     manufacturer.setCellValueFactory(new PropertyValueFactory<>("manufacturer"));
     typeCol.setCellValueFactory(new PropertyValueFactory<>("type"));
-    productId.setCellValueFactory(new PropertyValueFactory<>("id"));
+    productID.setCellValueFactory(new PropertyValueFactory<>("id"));
     tblExistingPro.setItems(productLine);
   }
 
@@ -179,7 +254,6 @@ public class Controller {
    * Description: displays current list of products in order of name, type, and manufacturer by
    * accessing the database.
    */
-
   public void showProductList() {
     // clear list to add new products and current products
     productLine.clear();
@@ -230,6 +304,11 @@ public class Controller {
     }
   }
 
+  /**
+   * @param event Description: adds an employee to the database by getting values from text fields
+   *              and inserting them into a database along with generating an email and password.
+   *              Disable Employee Tab afterwards.
+   */
   @FXML
   void enrollEmployee(ActionEvent event) {
     if (!(empName.getText().isBlank()) && !(empNewPass.getText().isBlank())
@@ -252,6 +331,10 @@ public class Controller {
     }
   }
 
+  /**
+   * @param event Description: Checks text fields' values and searches through database to see if
+   *              employee credentials exist. If so, log in employee and disable Employee tab.
+   */
   @FXML
   void loginEmployee(ActionEvent event) {
     if (!(empUser.getText().isBlank()) && !(empPass.getText().isBlank())
